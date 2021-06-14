@@ -7,7 +7,7 @@ const { UniqueConstraintError } = require("sequelize/lib/errors");
 const { UserModel } = require("../models");
 
 router.post("/register", async (req, res) => {
-  let endpoint = "/register";
+  let endpoint = " POST /register";
   let { username, password } = req.body.user;
   debug(`${endpoint} - username:%o`, req.body.user.username);
   try {
@@ -55,7 +55,7 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  let endpoint = "/login";
+  let endpoint = " POST /login";
   let { username, password } = req.body.user;
   debug(`${endpoint} - username:%o`, req.body.user.username);
 

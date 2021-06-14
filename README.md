@@ -14,6 +14,11 @@
 - pg-hstore
 - sequelize
 
+## Usage
+
+- No debugging : ```npm run start```
+- macOS Debug[nodemon]   : ```npm run macDebug```
+- Windows Debug[nodemon] : ```npm run winDebug```
 ## Tests
 
 See testing info, data, screenshots [Here](tests/TESTINFO.md)

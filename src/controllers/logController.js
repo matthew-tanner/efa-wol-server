@@ -1,14 +1,14 @@
 const router = require("express").Router();
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { UniqueConstraintError } = require("sequelize/lib/errors");
+const debug = require("debug")("http");
 
 const validateJWT = require("../middleware/validate-jwt");
 const { LogModel } = require("../models");
 
 router.post("/", validateJWT, async (req, res) => {
+  let endpoint = "POST /log";
   const { id } = req.user;
   const { description, definition, result } = req.body.log;
+  debug(`${endpoint} - userID : %o : ${JSON.stringify(req.body.log)}`, id);
 
   try {
     if ((description, definition, result)) {
@@ -22,20 +22,25 @@ router.post("/", validateJWT, async (req, res) => {
         response: "Success",
         data: newLog,
       });
+      debug(`${endpoint} - response (200) : ${JSON.stringify(newLog)}`);
     } else {
       res.status(400).json({
         response: "bad request",
       });
+      debug(`${endpoint} - response (400)`)
     }
   } catch (err) {
     res.status(500).json({
       response: "Error",
     });
+    debug(`${endpoint} - response (500) : ${err}`)
   }
 });
 
 router.get("/", validateJWT, async (req, res) => {
+  let endpoint = "GET /log";
   const { id } = req.user;
+  debug(`${endpoint} - userID : %o`, id);
 
   try {
     const userLogs = await LogModel.findAll({
@@ -47,16 +52,20 @@ router.get("/", validateJWT, async (req, res) => {
       response: "Success",
       data: userLogs,
     });
+    debug(`${endpoint} - response (200) : ${JSON.stringify(userLogs)}`);
   } catch (err) {
     res.status(500).json({
       response: "Error",
     });
+    debug(`${endpoint} - response (500) : ${err}`)
   }
 });
 
 router.get("/:id", validateJWT, async (req, res) => {
+  let endpoint = `GET /log/${req.params.id}`;
   const { id } = req.user;
   const logId = req.params.id;
+  debug(`${endpoint} - userID : %o - logId : ${logId}`, id);
 
   try {
     const userLog = await LogModel.findOne({
@@ -71,22 +80,28 @@ router.get("/:id", validateJWT, async (req, res) => {
         response: "Success",
         data: userLog,
       });
+      debug(`${endpoint} - response (200) : ${JSON.stringify(userLog)}`);
     } else {
       res.status(400).json({
         response: "bad request",
       });
+      debug(`${endpoint} - response (400)`)
     }
   } catch (err) {
     res.status(500).json({
       response: "Error",
     });
+    debug(`${endpoint} - response (500) : ${err}`)
   }
 });
 
 router.put("/:id", validateJWT, async (req, res) => {
+  let endpoint = `PUT /log/${req.params.id}`;
   const { id } = req.user;
   const logId = req.params.id;
   const { description, definition, result } = req.body.log;
+  debug(`${endpoint} - userID : %o - logId : ${logId} - ${JSON.stringify(req.body.log)}`, id);
+
   const updateQuery = {
     where: {
       id: logId,
@@ -109,21 +124,27 @@ router.put("/:id", validateJWT, async (req, res) => {
         response: "Success",
         data: updateLog,
       });
+      debug(`${endpoint} - response (200) : ${JSON.stringify(updateLog)}`);
     } else {
       res.status(400).json({
         response: "bad request",
       });
+      debug(`${endpoint} - response (400)`)
     }
   } catch (err) {
     res.status(500).json({
       response: "Error",
     });
+    debug(`${endpoint} - response (500) : ${err}`)
   }
 });
 
 router.delete("/:id", validateJWT, async (req, res) => {
+  let endpoint = `DELETE /log/${req.params.id}`;
   const { id } = req.user;
   const logId = req.params.id;
+  debug(`${endpoint} - userID : %o - logId : ${logId}`, id);
+
   const deleteQuery = {
     where: {
       id: logId,
@@ -139,11 +160,13 @@ router.delete("/:id", validateJWT, async (req, res) => {
         response: "Success",
         data: deleteLog,
       });
+      debug(`${endpoint} - response (200) : ${JSON.stringify(deleteLog)}`);
     }
   } catch (err) {
     res.status(500).json({
       response: "Error",
     });
+    debug(`${endpoint} - response (500) : ${err}`)
   }
 });
 
