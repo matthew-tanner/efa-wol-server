@@ -4,7 +4,9 @@
   "description": "Workout Log Server",
   "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "macDebug": "DEBUG=http npx nodemon",
+    "winDebug": "@powershell -Command $env:DEBUG='http';node src/server/js"
   },
   "repository": {
     "type": "git",
