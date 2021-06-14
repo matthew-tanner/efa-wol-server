@@ -27,7 +27,7 @@ test data is currently stored within PostMan api calls. Jest may be implemented 
 ![log-get-single](./media/log-get-single.png)
 
 > Get Log Failure
-![log-failure](./media/log-failure.png)
+![log-failure](./media/log-get-failure.png)
 
 > Update Log Entry
 ![log-update](./media/log-update.png)
