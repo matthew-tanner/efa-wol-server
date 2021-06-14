@@ -16,4 +16,4 @@
 
 ## Tests
 
-See testing info, data, screenshots [Here](test/TESTINFO.md)
+See testing info, data, screenshots [Here](tests/TESTINFO.md)
