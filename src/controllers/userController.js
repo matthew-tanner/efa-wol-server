@@ -41,7 +41,7 @@ router.post("/register", async (req, res) => {
       res.status(409).json({
         response: "username in use",
       });
-      debug(`${endpoint} - response (409) : ${err}`)
+      debug(`${endpoint} - response (409) : ${err}`);
     } else {
       res.status(500).json({
         response: "registration failed",
@@ -49,7 +49,7 @@ router.post("/register", async (req, res) => {
           error: err,
         },
       });
-      debug(`${endpoint} - response (500) : ${err}`)
+      debug(`${endpoint} - response (500) : ${err}`);
     }
   }
 });
@@ -87,24 +87,24 @@ router.post("/login", async (req, res) => {
             sessionToken: token,
           },
         });
-        debug(`${endpoint} - response (200)`)
+        debug(`${endpoint} - response (200)`);
       } else {
         res.status(401).json({
           response: "Unauthorized",
         });
-        debug(`${endpoint} - response (401)`)
+        debug(`${endpoint} - response (401)`);
       }
     } else {
       res.status(401).json({
         response: "Unauthorized",
       });
-      debug(`${endpoint} - response (401)`)
+      debug(`${endpoint} - response (401)`);
     }
   } catch (err) {
     res.status(500).json({
       response: "login failed",
     });
-    debug(`${endpoint} - response (500) : ${err }`)
+    debug(`${endpoint} - response (500) : ${err}`);
   }
 });
 
