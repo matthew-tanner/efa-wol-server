@@ -27,13 +27,13 @@ router.post("/", validateJWT, async (req, res) => {
       res.status(400).json({
         response: "bad request",
       });
-      debug(`${endpoint} - response (400)`)
+      debug(`${endpoint} - response (400)`);
     }
   } catch (err) {
     res.status(500).json({
       response: "Error",
     });
-    debug(`${endpoint} - response (500) : ${err}`)
+    debug(`${endpoint} - response (500) : ${err}`);
   }
 });
 
@@ -57,7 +57,7 @@ router.get("/", validateJWT, async (req, res) => {
     res.status(500).json({
       response: "Error",
     });
-    debug(`${endpoint} - response (500) : ${err}`)
+    debug(`${endpoint} - response (500) : ${err}`);
   }
 });
 
@@ -85,13 +85,13 @@ router.get("/:id", validateJWT, async (req, res) => {
       res.status(400).json({
         response: "bad request",
       });
-      debug(`${endpoint} - response (400)`)
+      debug(`${endpoint} - response (400)`);
     }
   } catch (err) {
     res.status(500).json({
       response: "Error",
     });
-    debug(`${endpoint} - response (500) : ${err}`)
+    debug(`${endpoint} - response (500) : ${err}`);
   }
 });
 
@@ -129,13 +129,13 @@ router.put("/:id", validateJWT, async (req, res) => {
       res.status(400).json({
         response: "bad request",
       });
-      debug(`${endpoint} - response (400)`)
+      debug(`${endpoint} - response (400)`);
     }
   } catch (err) {
     res.status(500).json({
       response: "Error",
     });
-    debug(`${endpoint} - response (500) : ${err}`)
+    debug(`${endpoint} - response (500) : ${err}`);
   }
 });
 
@@ -153,20 +153,26 @@ router.delete("/:id", validateJWT, async (req, res) => {
   };
 
   try {
-    const deleteLog = LogModel.destroy(deleteQuery);
+    const deleteLog = await LogModel.destroy(deleteQuery);
 
-    if (deleteQuery) {
+    if (deleteLog[0] == 1){
       res.status(200).json({
         response: "Success",
         data: deleteLog,
       });
       debug(`${endpoint} - response (200) : ${JSON.stringify(deleteLog)}`);
+    }else{
+      res.status(400).json({
+        response: "bad request",
+      });
+      debug(`${endpoint} - response (400)`);
     }
+
   } catch (err) {
     res.status(500).json({
       response: "Error",
     });
-    debug(`${endpoint} - response (500) : ${err}`)
+    debug(`${endpoint} - response (500) : ${err}`);
   }
 });
 
