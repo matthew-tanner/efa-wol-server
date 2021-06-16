@@ -1,8 +1,32 @@
 ## WOL Test Information
 
-## Data
+### JSON Structure
 
-test data is currently stored within PostMan api calls. Jest may be implemented at a later date.
+Register / Login:
+
+```json
+{
+  "user":{
+    "username": "User",
+    "password": "1234"
+  }
+}
+```
+
+Create / Update Log:
+
+(requires session token, provided by /login)
+
+```json
+{
+  "log": {
+    "description": "First Log",
+    "definition": "definition data here",
+    "result": "result data here"
+  }
+}
+```
+
 
 ## Screenshots
 > Registration Success
