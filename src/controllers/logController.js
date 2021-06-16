@@ -119,7 +119,7 @@ router.put("/:id", validateJWT, async (req, res) => {
   try {
     const updateLog = await LogModel.update(updateEntry, updateQuery);
 
-    if (updateLog) {
+    if (updateLog[0] === 1) {
       res.status(200).json({
         response: "Success",
         data: updateLog,
