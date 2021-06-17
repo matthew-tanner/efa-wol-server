@@ -1,14 +1,25 @@
 const router = require("express").Router();
-const debug = require("debug")("http");
+const chalk = require("chalk");
 
 const validateJWT = require("../middleware/validate-jwt");
 const { LogModel } = require("../models");
 
+const log = console.log;
+
 router.post("/", validateJWT, async (req, res) => {
-  let endpoint = "POST /log";
+  log(
+    req.originalUrl,
+    req.method === "POST"
+      ? chalk.bgBlue(req.method)
+      : req.method === "PUT"
+      ? chalk.bgYellow(req.method)
+      : req.method === "DELETE"
+      ? chalk.bgRed(req.method)
+      : chalk.bgGreen(req.method),
+    req.body
+  );
   const { id } = req.user;
   const { description, definition, result } = req.body.log;
-  debug(`${endpoint} - userID : %o : ${JSON.stringify(req.body.log)}`, id);
 
   try {
     if ((description, definition, result)) {
@@ -22,25 +33,34 @@ router.post("/", validateJWT, async (req, res) => {
         response: "Success",
         data: newLog,
       });
-      debug(`${endpoint} - response (200) : ${JSON.stringify(newLog)}`);
+      log(`log created - ${JSON.stringify(newLog, null, 2)}`);
     } else {
-      res.status(400).json({
+      log(chalk`{bgRed error} 400 - bad request`);
+      return res.status(400).json({
         response: "bad request",
       });
-      debug(`${endpoint} - response (400)`);
     }
   } catch (err) {
-    res.status(500).json({
+    log(chalk`{bgRed error} 500 - ${err}`);
+    return res.status(500).json({
       response: "Error",
     });
-    debug(`${endpoint} - response (500) : ${err}`);
   }
 });
 
 router.get("/", validateJWT, async (req, res) => {
-  let endpoint = "GET /log";
   const { id } = req.user;
-  debug(`${endpoint} - userID : %o`, id);
+  log(
+    req.originalUrl,
+    req.method === "POST"
+      ? chalk.bgBlue(req.method)
+      : req.method === "PUT"
+      ? chalk.bgYellow(req.method)
+      : req.method === "DELETE"
+      ? chalk.bgRed(req.method)
+      : chalk.bgGreen(req.method),
+    id
+  );
 
   try {
     const userLogs = await LogModel.findAll({
@@ -52,20 +72,30 @@ router.get("/", validateJWT, async (req, res) => {
       response: "Success",
       data: userLogs,
     });
-    debug(`${endpoint} - response (200) : ${JSON.stringify(userLogs)}`);
+    log(`response (200) : ${JSON.stringify(userLogs)}`);
   } catch (err) {
-    res.status(500).json({
+    log(chalk`{bgRed error} 500 - ${err}`);
+    return res.status(500).json({
       response: "Error",
     });
-    debug(`${endpoint} - response (500) : ${err}`);
   }
 });
 
 router.get("/:id", validateJWT, async (req, res) => {
-  let endpoint = `GET /log/${req.params.id}`;
   const { id } = req.user;
   const logId = req.params.id;
-  debug(`${endpoint} - userID : %o - logId : ${logId}`, id);
+  log(
+    req.originalUrl,
+    req.method === "POST"
+      ? chalk.bgBlue(req.method)
+      : req.method === "PUT"
+      ? chalk.bgYellow(req.method)
+      : req.method === "DELETE"
+      ? chalk.bgRed(req.method)
+      : chalk.bgGreen(req.method),
+    id,
+    logId
+  );
 
   try {
     const userLog = await LogModel.findOne({
@@ -80,27 +110,38 @@ router.get("/:id", validateJWT, async (req, res) => {
         response: "Success",
         data: userLog,
       });
-      debug(`${endpoint} - response (200) : ${JSON.stringify(userLog)}`);
+      log(`response (200) : ${JSON.stringify(userLog)}`);
     } else {
-      res.status(400).json({
+      log(chalk`{bgRed error} 400 - bad request`);
+      return res.status(400).json({
         response: "bad request",
       });
-      debug(`${endpoint} - response (400)`);
     }
   } catch (err) {
-    res.status(500).json({
+    log(chalk`{bgRed error} 500 - ${err}`);
+    return res.status(500).json({
       response: "Error",
     });
-    debug(`${endpoint} - response (500) : ${err}`);
   }
 });
 
 router.put("/:id", validateJWT, async (req, res) => {
-  let endpoint = `PUT /log/${req.params.id}`;
   const { id } = req.user;
   const logId = req.params.id;
   const { description, definition, result } = req.body.log;
-  debug(`${endpoint} - userID : %o - logId : ${logId} - ${JSON.stringify(req.body.log)}`, id);
+  log(
+    req.originalUrl,
+    req.method === "POST"
+      ? chalk.bgBlue(req.method)
+      : req.method === "PUT"
+      ? chalk.bgYellow(req.method)
+      : req.method === "DELETE"
+      ? chalk.bgRed(req.method)
+      : chalk.bgGreen(req.method),
+    id,
+    logId,
+    JSON.stringify(req.body)
+  );
 
   const updateQuery = {
     where: {
@@ -124,26 +165,36 @@ router.put("/:id", validateJWT, async (req, res) => {
         response: "Success",
         data: updateLog,
       });
-      debug(`${endpoint} - response (200) : ${JSON.stringify(updateLog)}`);
+      log(`response (200) : ${JSON.stringify(updateLog)}`);
     } else {
-      res.status(400).json({
+      log(chalk`{bgRed error} 400 - bad request`);
+      return res.status(400).json({
         response: "bad request",
       });
-      debug(`${endpoint} - response (400)`);
     }
   } catch (err) {
-    res.status(500).json({
+    log(chalk`{bgRed error} 500 - ${err}`);
+    return res.status(500).json({
       response: "Error",
     });
-    debug(`${endpoint} - response (500) : ${err}`);
   }
 });
 
 router.delete("/:id", validateJWT, async (req, res) => {
-  let endpoint = `DELETE /log/${req.params.id}`;
   const { id } = req.user;
   const logId = req.params.id;
-  debug(`${endpoint} - userID : %o - logId : ${logId}`, id);
+  log(
+    req.originalUrl,
+    req.method === "POST"
+      ? chalk.bgBlue(req.method)
+      : req.method === "PUT"
+      ? chalk.bgYellow(req.method)
+      : req.method === "DELETE"
+      ? chalk.bgRed(req.method)
+      : chalk.bgGreen(req.method),
+    id,
+    logId
+  );
 
   const deleteQuery = {
     where: {
@@ -153,26 +204,17 @@ router.delete("/:id", validateJWT, async (req, res) => {
   };
 
   try {
-    const deleteLog = await LogModel.destroy(deleteQuery);
-
-    if (deleteLog[0] == 1){
-      res.status(200).json({
-        response: "Success",
-        data: deleteLog,
-      });
-      debug(`${endpoint} - response (200) : ${JSON.stringify(deleteLog)}`);
-    }else{
-      res.status(400).json({
-        response: "bad request",
-      });
-      debug(`${endpoint} - response (400)`);
-    }
-
+    LogModel.destroy(deleteQuery);
+    res.status(200).json({
+      response: "Success",
+      data: deleteQuery,
+    });
+    log(chalk`delete confirmed - ${logId}`);
   } catch (err) {
-    res.status(500).json({
+    log(chalk`{bgRed error} 500 - ${err}`);
+    return res.status(500).json({
       response: "Error",
     });
-    debug(`${endpoint} - response (500) : ${err}`);
   }
 });
 

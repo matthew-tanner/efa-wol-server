@@ -1,18 +1,35 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const debug = require("debug")("http");
+const chalk = require("chalk");
+const MaskData = require("maskdata");
 const { UniqueConstraintError } = require("sequelize/lib/errors");
 
 const { UserModel } = require("../models");
 
+const log = console.log;
+const maskJSONOptions = {
+  maskWith: "*",
+  fields: ["password", "passwordhash"],
+};
+
 router.post("/register", async (req, res) => {
-  let endpoint = " POST /register";
   let { username, password } = req.body.user;
-  debug(`${endpoint} - username:%o`, req.body.user.username);
+  const maskedReq = MaskData.maskJSONFields(req.body.user, maskJSONOptions);
+  log(
+    req.originalUrl,
+    req.method === "POST"
+      ? chalk.bgBlue(req.method)
+      : req.method === "PUT"
+      ? chalk.bgYellow(req.method)
+      : req.method === "DELETE"
+      ? chalk.bgRed(req.method)
+      : chalk.bgGreen(req.method),
+    maskedReq
+  );
+
   try {
     password = bcrypt.hashSync(password, 12);
-    debug(`${endpoint} - password for %o hashed`, username);
 
     const secret = process.env.JWT_SECRET;
 
@@ -20,10 +37,10 @@ router.post("/register", async (req, res) => {
       username: username,
       passwordhash: password,
     });
-    debug(`${endpoint} - user created for %o`, regUser.username);
 
-    let token = jwt.sign({ id: regUser.id }, secret, { expiresIn: "48h" });
-    debug(`${endpoint} - token generated for %o`, regUser.username);
+    const maskedUser = MaskData.maskJSONFields(regUser, maskJSONOptions);
+
+    let token = jwt.sign({ id: regUser.id }, secret, { expiresIn: "24h" });
 
     res.status(200).json({
       response: "registration successful",
@@ -35,29 +52,39 @@ router.post("/register", async (req, res) => {
         sessionToken: token,
       },
     });
-    debug(`${endpoint} - response (200)`);
+    log(`user created - ${JSON.stringify(maskedUser)}`);
   } catch (err) {
     if (err instanceof UniqueConstraintError) {
-      res.status(409).json({
+      log(chalk`{bgRed error} 409 - ${err}`);
+      return res.status(409).json({
         response: "username in use",
       });
-      debug(`${endpoint} - response (409) : ${err}`);
     } else {
-      res.status(500).json({
+      log(chalk`{bgRed error} 500 - ${err}`);
+      return res.status(500).json({
         response: "registration failed",
         data: {
           error: err,
         },
       });
-      debug(`${endpoint} - response (500) : ${err}`);
     }
   }
 });
 
 router.post("/login", async (req, res) => {
-  let endpoint = " POST /login";
   let { username, password } = req.body.user;
-  debug(`${endpoint} - username:%o`, req.body.user.username);
+  const maskedReq = MaskData.maskJSONFields(req.body.user, maskJSONOptions);
+  log(
+    req.originalUrl,
+    req.method === "POST"
+      ? chalk.bgBlue(req.method)
+      : req.method === "PUT"
+      ? chalk.bgYellow(req.method)
+      : req.method === "DELETE"
+      ? chalk.bgRed(req.method)
+      : chalk.bgGreen(req.method),
+    JSON.stringify(maskedReq, null, 2)
+  );
 
   try {
     const secret = process.env.JWT_SECRET;
@@ -68,14 +95,14 @@ router.post("/login", async (req, res) => {
     });
 
     if (loginUser) {
-      debug(`${endpoint} - user found for %o`, loginUser.username);
       const isCorrectPass = await bcrypt.compare(password, loginUser.passwordhash);
 
       if (isCorrectPass) {
-        debug(`${endpoint} - password check success`);
+        log(chalk`password check {green ${isCorrectPass}} for ${loginUser.username}`);
 
         let token = jwt.sign({ id: loginUser.id }, secret, { expiresIn: "48h" });
-        debug(`${endpoint} - token generated for %o`, loginUser.username);
+
+        const maskedUser = MaskData.maskJSONFields(loginUser, maskJSONOptions);
 
         res.status(200).json({
           response: "login successful",
@@ -87,24 +114,24 @@ router.post("/login", async (req, res) => {
             sessionToken: token,
           },
         });
-        debug(`${endpoint} - response (200)`);
+        log(`login success - ${JSON.stringify(maskedUser, null, 2)}`);
       } else {
-        res.status(401).json({
+        log(chalk`{bgRed error} 401 - Unauthorized`);
+        return res.status(401).json({
           response: "Unauthorized",
         });
-        debug(`${endpoint} - response (401)`);
       }
     } else {
-      res.status(401).json({
+      log(chalk`{bgRed error} 401 - Unauthorized`);
+      return res.status(401).json({
         response: "Unauthorized",
       });
-      debug(`${endpoint} - response (401)`);
     }
   } catch (err) {
-    res.status(500).json({
+    log(chalk`{bgRed error} 500 - ${err}`);
+    return res.status(500).json({
       response: "login failed",
     });
-    debug(`${endpoint} - response (500) : ${err}`);
   }
 });
 
