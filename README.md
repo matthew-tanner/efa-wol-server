@@ -6,7 +6,7 @@
 
 - bcrypt
 - cors
-- debug
+- chalk
 - dotenv
 - express
 - jsonwebtoken
@@ -21,5 +21,4 @@ See testing info, data, screenshots [Here](tests/TESTINFO.md)
 ## Usage
 
 - No debugging : ```npm run start```
-- macOS Debug[nodemon]   : ```npm run macDebug```
-- Windows Debug[nodemon] : ```npm run winDebug```
+- Debug[nodemon]   : ```npm run debug```
