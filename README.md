@@ -10,6 +10,7 @@
 - dotenv
 - express
 - jsonwebtoken
+- maskdata
 - pg
 - pg-hstore
 - sequelize
