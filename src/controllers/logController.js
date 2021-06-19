@@ -36,13 +36,13 @@ router.post("/", validateJWT, async (req, res) => {
       log(`log created - ${JSON.stringify(newLog, null, 2)}`);
     } else {
       log(chalk`{bgRed error} 400 - bad request`);
-      return res.status(400).json({
+      res.status(400).json({
         response: "bad request",
       });
     }
   } catch (err) {
     log(chalk`{bgRed error} 500 - ${err}`);
-    return res.status(500).json({
+    res.status(500).json({
       response: "Error",
     });
   }
@@ -75,7 +75,7 @@ router.get("/", validateJWT, async (req, res) => {
     log(`response (200) : ${JSON.stringify(userLogs)}`);
   } catch (err) {
     log(chalk`{bgRed error} 500 - ${err}`);
-    return res.status(500).json({
+    res.status(500).json({
       response: "Error",
     });
   }
@@ -113,13 +113,13 @@ router.get("/:id", validateJWT, async (req, res) => {
       log(`response (200) : ${JSON.stringify(userLog)}`);
     } else {
       log(chalk`{bgRed error} 400 - bad request`);
-      return res.status(400).json({
+      res.status(400).json({
         response: "bad request",
       });
     }
   } catch (err) {
     log(chalk`{bgRed error} 500 - ${err}`);
-    return res.status(500).json({
+    res.status(500).json({
       response: "Error",
     });
   }
@@ -168,13 +168,13 @@ router.put("/:id", validateJWT, async (req, res) => {
       log(`response (200) : ${JSON.stringify(updateLog)}`);
     } else {
       log(chalk`{bgRed error} 400 - bad request`);
-      return res.status(400).json({
+      res.status(400).json({
         response: "bad request",
       });
     }
   } catch (err) {
     log(chalk`{bgRed error} 500 - ${err}`);
-    return res.status(500).json({
+    res.status(500).json({
       response: "Error",
     });
   }
@@ -212,7 +212,7 @@ router.delete("/:id", validateJWT, async (req, res) => {
     log(chalk`delete confirmed - ${logId}`);
   } catch (err) {
     log(chalk`{bgRed error} 500 - ${err}`);
-    return res.status(500).json({
+    res.status(500).json({
       response: "Error",
     });
   }
